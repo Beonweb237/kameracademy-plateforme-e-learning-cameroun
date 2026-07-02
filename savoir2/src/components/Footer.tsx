@@ -123,15 +123,6 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 text-center">
           <p className="text-sm text-ka-light">
             © 2025 Kimi Academy. Tous droits réservés.
-            {' '}&mdash;{' '}
-            <a
-              href="https://www.beonweb.cm/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-150"
-            >
-              Conçu par Beonweb
-            </a>
           </p>
         </div>
       </div>
