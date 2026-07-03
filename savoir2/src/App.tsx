@@ -1,6 +1,13 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
+import Catalogue from '@/pages/Catalogue'
+import CourseDetail from '@/pages/CourseDetail'
+import Enseignants from '@/pages/Enseignants'
+import InstructorProfile from '@/pages/InstructorProfile'
+import Panier from '@/pages/Panier'
+import TableauDeBord from '@/pages/TableauDeBord'
+import Admin from '@/pages/Admin'
 
 function App() {
   return (
@@ -8,13 +15,13 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/catalogue" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Catalogue - En construction</p></div>} />
-          <Route path="/cours/:id" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Détail du cours - En construction</p></div>} />
-          <Route path="/enseignants" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Enseignants - En construction</p></div>} />
-          <Route path="/enseignants/:id" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Profil enseignant - En construction</p></div>} />
-          <Route path="/panier" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Panier - En construction</p></div>} />
-          <Route path="/tableau-de-bord" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Tableau de bord - En construction</p></div>} />
-          <Route path="/admin" element={<div className="pt-[72px] min-h-[100dvh] flex items-center justify-center"><p className="text-ka-medium text-lg">Administration - En construction</p></div>} />
+          <Route path="/catalogue" element={<Catalogue />} />
+          <Route path="/cours/:id" element={<CourseDetail />} />
+          <Route path="/enseignants" element={<Enseignants />} />
+          <Route path="/enseignants/:id" element={<InstructorProfile />} />
+          <Route path="/panier" element={<Panier />} />
+          <Route path="/tableau-de-bord" element={<TableauDeBord />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
       </Routes>
     </HashRouter>
