@@ -1,9 +1,10 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { PlayCircle, Clock, BarChart3, Globe, CheckCircle, Award, ChevronDown } from 'lucide-react'
+import { PlayCircle, Clock, BarChart3, Globe, CheckCircle, Award, ChevronDown, ShieldCheck, RefreshCw, Smartphone } from 'lucide-react'
 import { useState } from 'react'
 import StarRating from '@/components/StarRating'
 import InstructorCard from '@/components/InstructorCard'
+import CourseCard from '@/components/CourseCard'
 import { courses, instructors } from '@/data/mockData'
 
 const modules = [
@@ -14,12 +15,34 @@ const modules = [
   { title: 'Projet final et certification', lessons: 3, duration: '1h 15min' },
 ]
 
+const guaranteeBadges = [
+  { icon: ShieldCheck, label: 'Garantie 30 jours satisfait ou remboursé' },
+  { icon: RefreshCw, label: 'Mises à jour gratuites à vie' },
+  { icon: Smartphone, label: 'Accessible sur mobile, tablette et ordinateur' },
+]
+
+const faqs = [
+  { q: 'Ai-je besoin de prérequis pour suivre ce cours ?', a: 'Non, ce cours est conçu pour être accessible dès le niveau débutant, avec une progression pédagogique claire.' },
+  { q: 'Le certificat est-il reconnu ?', a: 'Vous recevez un certificat de réussite Kimi Academy attestant de la validation du programme complet.' },
+  { q: 'Puis-je suivre le cours à mon rythme ?', a: 'Oui, l\'accès est illimité dans le temps, vous progressez selon votre disponibilité.' },
+  { q: 'Y a-t-il un support en cas de question ?', a: 'Un espace de discussion avec l\'instructeur et la communauté est disponible pour chaque module.' },
+]
+
 export default function CourseDetail() {
   const { id } = useParams()
   const [openModule, setOpenModule] = useState<number | null>(0)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   const course = courses.find((c) => c.id === Number(id)) ?? courses[0]
   const instructor = instructors.find((i) => i.name === course.instructor) ?? instructors[0]
+
+  const similarCourses = courses
+    .filter((c) => c.category === course.category && c.id !== course.id)
+    .slice(0, 4)
+
+  const moreByInstructor = courses
+    .filter((c) => c.instructor === course.instructor && c.id !== course.id)
+    .slice(0, 3)
 
   const formatPrice = (price: number) => price.toLocaleString('fr-FR') + ' FCFA'
 
@@ -102,6 +125,20 @@ export default function CourseDetail() {
         </div>
       </section>
 
+      {/* Guarantee badges */}
+      <section className="py-10 border-b border-ka-border">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {guaranteeBadges.map((badge) => (
+            <div key={badge.label} className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-ka-primary-light flex items-center justify-center shrink-0">
+                <badge.icon size={18} className="text-ka-primary" />
+              </div>
+              <p className="text-sm text-ka-medium">{badge.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Program + Instructor */}
       <section className="py-16">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -166,9 +203,74 @@ export default function CourseDetail() {
           <div>
             <h2 className="text-2xl font-bold text-ka-dark mb-6">Votre instructeur</h2>
             <InstructorCard instructor={instructor} />
+
+            {moreByInstructor.length > 0 && (
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-ka-dark mb-4">
+                  Plus de cours par {instructor.name.split(' ')[0]}
+                </h3>
+                <div className="space-y-3">
+                  {moreByInstructor.map((c) => (
+                    <Link
+                      key={c.id}
+                      to={`/cours/${c.id}`}
+                      className="flex gap-3 p-3 border border-ka-border rounded-xl hover:border-ka-primary transition-colors duration-200"
+                    >
+                      <img src={c.image} alt={c.title} className="w-16 aspect-video object-cover rounded-lg shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-ka-dark line-clamp-2">{c.title}</p>
+                        <p className="text-xs text-ka-light mt-1">{formatPrice(c.price)}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-ka-background">
+        <div className="max-w-[760px] mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl font-bold text-ka-dark mb-8">Questions fréquentes</h2>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div key={faq.q} className="bg-white border border-ka-border rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-4 text-left"
+                >
+                  <span className="font-medium text-ka-dark text-sm">{faq.q}</span>
+                  <ChevronDown
+                    size={18}
+                    className={`text-ka-medium shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {openFaq === i && (
+                  <div className="px-4 pb-4">
+                    <p className="text-sm text-ka-medium">{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Similar courses */}
+      {similarCourses.length > 0 && (
+        <section className="py-16">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+            <h2 className="text-2xl font-bold text-ka-dark mb-8">Cours similaires</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {similarCourses.map((c) => (
+                <CourseCard key={c.id} course={c} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }

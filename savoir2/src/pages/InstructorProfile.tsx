@@ -1,13 +1,22 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { BookOpen, Users, Star, Linkedin, Twitter, Facebook } from 'lucide-react'
+import { BookOpen, Users, Star, Linkedin, Twitter, Facebook, Award } from 'lucide-react'
 import CourseCard from '@/components/CourseCard'
+import InstructorCard from '@/components/InstructorCard'
+import StarRating from '@/components/StarRating'
 import { instructors, courses } from '@/data/mockData'
+
+const studentTestimonials = [
+  { name: 'Sylvie A.', text: 'Une pédagogie claire et des exemples concrets adaptés à notre réalité locale.' },
+  { name: 'Roland M.', text: 'J\'ai pu appliquer directement les enseignements dans mon activité professionnelle.' },
+  { name: 'Chantal N.', text: 'Un accompagnement personnalisé qui fait toute la différence.' },
+]
 
 export default function InstructorProfile() {
   const { id } = useParams()
   const instructor = instructors.find((i) => i.id === Number(id)) ?? instructors[0]
   const instructorCourses = courses.filter((c) => c.instructor === instructor.name)
+  const similarInstructors = instructors.filter((i) => i.id !== instructor.id).slice(0, 3)
 
   return (
     <div className="pt-[72px] min-h-[100dvh] bg-white">
@@ -73,6 +82,60 @@ export default function InstructorProfile() {
           ) : (
             <p className="text-ka-medium">Aucun cours disponible pour le moment.</p>
           )}
+        </div>
+      </section>
+
+      {/* Achievements */}
+      <section className="py-16 bg-ka-background">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl font-bold text-ka-dark mb-8 flex items-center gap-2">
+            <Award size={22} className="text-ka-primary" />
+            Certifications & réalisations
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-xl border border-ka-border">
+              <p className="font-semibold text-ka-dark mb-1">Formateur certifié Kimi Academy</p>
+              <p className="text-sm text-ka-medium">Validation pédagogique complète de la plateforme.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-ka-border">
+              <p className="font-semibold text-ka-dark mb-1">Top instructeur {new Date().getFullYear()}</p>
+              <p className="text-sm text-ka-medium">Classé parmi les enseignants les mieux notés de sa catégorie.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-ka-border">
+              <p className="font-semibold text-ka-dark mb-1">+{instructor.students.toLocaleString('fr-FR')} vies impactées</p>
+              <p className="text-sm text-ka-medium">Un parcours suivi par des milliers d'apprenants camerounais.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl font-bold text-ka-dark mb-8">Ce que disent ses élèves</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {studentTestimonials.map((t) => (
+              <div key={t.name} className="p-6 rounded-xl bg-ka-background">
+                <StarRating rating={5} size={14} />
+                <p className="text-sm text-ka-medium mt-3 mb-4 italic">"{t.text}"</p>
+                <p className="text-sm font-semibold text-ka-dark">{t.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Similar instructors */}
+      <section className="py-16 bg-ka-background">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl font-bold text-ka-dark mb-8">Instructeurs similaires</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {similarInstructors.map((i) => (
+              <Link key={i.id} to={`/enseignants/${i.id}`}>
+                <InstructorCard instructor={i} />
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>

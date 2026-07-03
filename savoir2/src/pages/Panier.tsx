@@ -1,11 +1,23 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Trash2, Tag, ShoppingCart } from 'lucide-react'
+import { Trash2, Tag, ShoppingCart, ShieldCheck, RefreshCw, Infinity as InfinityIcon } from 'lucide-react'
+import CourseCard from '@/components/CourseCard'
 import { courses } from '@/data/mockData'
+
+const trustBadges = [
+  { icon: ShieldCheck, label: 'Paiement 100% sécurisé' },
+  { icon: RefreshCw, label: 'Garantie 30 jours' },
+  { icon: InfinityIcon, label: 'Accès à vie aux cours' },
+]
 
 export default function Panier() {
   const [items, setItems] = useState(courses.slice(0, 3))
   const [promoCode, setPromoCode] = useState('')
+
+  const suggestions = useMemo(() => {
+    const itemIds = new Set(items.map((i) => i.id))
+    return courses.filter((c) => !itemIds.has(c.id)).slice(0, 4)
+  }, [items])
 
   const formatPrice = (price: number) => price.toLocaleString('fr-FR') + ' FCFA'
 
@@ -99,6 +111,25 @@ export default function Panier() {
                 <button className="w-full h-12 bg-ka-primary text-white font-semibold rounded-xl hover:bg-ka-primary-dark transition-colors duration-200">
                   Passer à la caisse
                 </button>
+                <div className="mt-6 space-y-3 pt-6 border-t border-ka-border">
+                  {trustBadges.map((badge) => (
+                    <div key={badge.label} className="flex items-center gap-2 text-sm text-ka-medium">
+                      <badge.icon size={16} className="text-ka-primary shrink-0" />
+                      <span>{badge.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {suggestions.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-2xl font-bold text-ka-dark mb-8">Vous aimerez aussi</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {suggestions.map((course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))}
               </div>
             </div>
           )}

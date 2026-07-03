@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Award, Clock, TrendingUp } from 'lucide-react'
+import { Award, Clock, TrendingUp, Flame, Target, Zap, BookOpen, Star } from 'lucide-react'
 import { courses } from '@/data/mockData'
 
 const inProgress = [
@@ -9,7 +9,25 @@ const inProgress = [
 
 const completed = [courses[4], courses[7]]
 
-const recommended = courses.slice(8, 12)
+const recommended = courses.slice(6, 12)
+
+const weeklyProgress = [
+  { day: 'Lun', hours: 1.5 },
+  { day: 'Mar', hours: 2 },
+  { day: 'Mer', hours: 0.5 },
+  { day: 'Jeu', hours: 1 },
+  { day: 'Ven', hours: 2.5 },
+  { day: 'Sam', hours: 3 },
+  { day: 'Dim', hours: 0 },
+]
+
+const achievements = [
+  { icon: Flame, label: 'Série de 7 jours', unlocked: true, desc: 'Apprendre 7 jours consécutifs' },
+  { icon: Target, label: 'Premier cours terminé', unlocked: true, desc: 'Terminer un cours à 100%' },
+  { icon: Zap, label: 'Apprenant rapide', unlocked: true, desc: 'Terminer un module en une session' },
+  { icon: BookOpen, label: 'Collectionneur', unlocked: false, desc: 'S\'inscrire à 5 cours différents' },
+  { icon: Star, label: 'Critique assidu', unlocked: false, desc: 'Laisser 3 avis sur des cours' },
+]
 
 export default function TableauDeBord() {
   return (
@@ -71,6 +89,48 @@ export default function TableauDeBord() {
                     <p className="text-sm text-ka-medium">{progress}% terminé</p>
                   </div>
                 </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Weekly progress chart */}
+          <div className="mb-12">
+            <h2 className="text-xl font-bold text-ka-dark mb-6">Progression cette semaine</h2>
+            <div className="bg-white rounded-xl border border-ka-border p-6">
+              <div className="flex items-end justify-between gap-2 h-32">
+                {weeklyProgress.map((day) => (
+                  <div key={day.day} className="flex-1 flex flex-col items-center gap-2">
+                    <div className="w-full flex items-end justify-center h-24">
+                      <div
+                        className="w-full max-w-[32px] bg-ka-primary rounded-t-md"
+                        style={{ height: `${(day.hours / 3) * 100}%`, minHeight: day.hours > 0 ? '4px' : '0' }}
+                      />
+                    </div>
+                    <p className="text-xs text-ka-medium">{day.day}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-ka-medium mt-4 text-center">
+                Total : {weeklyProgress.reduce((sum, d) => sum + d.hours, 0)}h cette semaine
+              </p>
+            </div>
+          </div>
+
+          {/* Achievements */}
+          <div className="mb-12">
+            <h2 className="text-xl font-bold text-ka-dark mb-6">Badges & réussites</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+              {achievements.map((badge) => (
+                <div
+                  key={badge.label}
+                  className={`p-4 rounded-xl border text-center ${
+                    badge.unlocked ? 'bg-white border-ka-border' : 'bg-ka-background border-ka-border opacity-50'
+                  }`}
+                >
+                  <badge.icon size={24} className={`mx-auto mb-2 ${badge.unlocked ? 'text-ka-accent' : 'text-ka-light'}`} />
+                  <p className="text-xs font-semibold text-ka-dark mb-1">{badge.label}</p>
+                  <p className="text-[11px] text-ka-light">{badge.desc}</p>
+                </div>
               ))}
             </div>
           </div>
